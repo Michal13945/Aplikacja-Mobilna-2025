@@ -17,9 +17,14 @@ class MemoryGameLogic(private val maxMatches: Int) {
         valueFunctions.clear()
 
         return when {
-            result && matches == maxMatches -> GameStates.Finished
             result -> GameStates.Match
+            result && matches == maxMatches -> GameStates.Finished
             else -> GameStates.NoMatch
+
         }
+    }
+
+    fun isGameFinished(): Boolean {
+        return matches == maxMatches
     }
 }
