@@ -20,7 +20,6 @@ class MemoryGameLogic(private val maxMatches: Int) {
             result -> GameStates.Match
             result && matches == maxMatches -> GameStates.Finished
             else -> GameStates.NoMatch
-
         }
     }
 

@@ -64,7 +64,7 @@ class Lab03Activity : AppCompatActivity() {
                         }
                         GameStates.Match -> {
                             event.tiles.forEach { it.revealed = true }
-                            if (isSound === true) completionPlayer.start()
+                            if (isSound) completionPlayer.start()
                         }
                         GameStates.NoMatch -> {
                             event.tiles.forEach { it.revealed = true }
@@ -107,7 +107,6 @@ class Lab03Activity : AppCompatActivity() {
                 isSound = !isSound
                 Toast.makeText(this, if (isSound) "Dźwięk włączony" else "Dźwięk wyłączony", Toast.LENGTH_SHORT).show()
 
-                // Poprawne ustawienie ikony - używamy ContextCompat
                 val newIcon = if (isSound) R.drawable.baseline_alarm_add_24 else R.drawable.baseline_alarm_off_24
                 item.setIcon(newIcon)
 

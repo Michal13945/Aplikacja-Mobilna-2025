@@ -9,5 +9,3 @@
     app:rowCount="4"
     android:padding="16dp"
     app:orientation="horizontal"/>
-
-

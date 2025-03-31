@@ -17,8 +17,8 @@ class MemoryBoardView(
     private val gridLayout: GridLayout,
     private val cols: Int,
     private val rows: Int,
-    private val completionPlayer: MediaPlayer,  // Dźwięk poprawnej pary
-    private val negativePlayer: MediaPlayer    // Dźwięk błędnej pary
+    private val completionPlayer: MediaPlayer,
+    private val negativePlayer: MediaPlayer
 ) {
     private val tiles: MutableMap<String, Tile> = mutableMapOf()
     private val icons: List<Int> = listOf(
@@ -39,7 +39,7 @@ class MemoryBoardView(
         R.drawable.baseline_bubble_chart_24,
         R.drawable.baseline_brush_24,
         R.drawable.baseline_brunch_dining_24,
-        R.drawable.baseline_business_center_24,
+        R.drawable.baseline_business_center_24
     )
 
     private val deckResource: Int = R.drawable.baseline_auto_fix_high_24
@@ -99,7 +99,6 @@ class MemoryBoardView(
             GameStates.Matching -> { }
 
             GameStates.Match -> {
-
                 if (logic.isGameFinished()) {
                     animatePairedButton(matchedPair[0].button) {}
                     animatePairedButton(matchedPair[1].button) {
@@ -114,7 +113,6 @@ class MemoryBoardView(
             }
 
             GameStates.NoMatch -> {
-
                 Handler().postDelayed({
                     animateWrongPair(matchedPair[0].button, matchedPair[1].button) {
                         matchedPair.forEach {
