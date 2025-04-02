@@ -8,6 +8,34 @@
     tools:context="pl.wsei.pam.MainActivity">
 
     <Button
+        android:id="@+id/mainBtnRunLab02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClickMainBtnRunLab02"
+        android:text="@string/lab02"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <Button
+        android:id="@+id/btn_lab06"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="244dp"
+        android:onClick="onClickMainBtnRunLab06"
+        android:text="@string/lab06"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.369" />
+
+    <Button
         android:id="@+id/mainBtnRunLab01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,18 +46,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.783" />
 
-    <Button
-        android:id="@+id/mainBtnRunLab02"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClickMainBtnRunLab02"
-        android:text="@string/lab02"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainBtnRunLab01"
-        app:layout_constraintVertical_bias="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>
