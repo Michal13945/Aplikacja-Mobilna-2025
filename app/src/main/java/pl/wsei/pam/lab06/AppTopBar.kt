@@ -25,7 +25,7 @@ fun AppTopBar(
         title = { Text(text = title) },
         navigationIcon = {
             if (showBackIcon) {
-                IconButton(onClick = { navController.navigate(route) }) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back"
@@ -36,7 +36,9 @@ fun AppTopBar(
         actions = {
             if (route != "form") {
                 OutlinedButton(
-                    onClick = { navController.navigate("list") }
+                    onClick = {
+                        navController.navigate("form")
+                    }
                 ) {
                     Text(
                         text = "Zapisz",
@@ -44,10 +46,11 @@ fun AppTopBar(
                     )
                 }
             } else {
-                IconButton(onClick = { /*TODO*/ }) {
+
+                IconButton(onClick = { /*TODO: Akcja ustawień*/ }) {
                     Icon(imageVector = Icons.Default.Settings, contentDescription = "")
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { /*TODO: Akcja Home*/ }) {
                     Icon(imageVector = Icons.Default.Home, contentDescription = "")
                 }
             }
