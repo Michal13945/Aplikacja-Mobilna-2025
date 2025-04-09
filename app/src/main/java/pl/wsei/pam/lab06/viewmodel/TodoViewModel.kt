@@ -21,9 +21,11 @@ class TodoViewModel(private val dao: TodoTaskDao) : ViewModel() {
         }
     }
 
-    fun addTask(task: TodoTask) {
+    // Dodajemy callback, który wywołuje funkcję po zapisaniu zadania
+    fun addTask(task: TodoTask, onTaskAdded: () -> Unit) {
         viewModelScope.launch {
             dao.insert(TodoTaskEntity.fromModel(task))
+            onTaskAdded()  // Po dodaniu zadania wywołujemy callback
         }
     }
 

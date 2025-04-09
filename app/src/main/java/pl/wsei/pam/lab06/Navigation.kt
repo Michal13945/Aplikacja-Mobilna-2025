@@ -7,14 +7,17 @@ import androidx.navigation.compose.rememberNavController
 import pl.wsei.pam.lab06.viewmodel.TodoViewModel
 
 @Composable
-fun MainScreen(todoViewModel: TodoViewModel) {
+fun MainScreen(
+    todoViewModel: TodoViewModel,
+    onTaskAdded: (TodoTask) -> Unit
+) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "list") {
         composable("list") {
             ListScreen(navController = navController, viewModel = todoViewModel)
         }
         composable("form") {
-            FormScreen(navController = navController, viewModel = todoViewModel)
+            FormScreen(navController = navController, viewModel = todoViewModel, onTaskAdded = onTaskAdded)
         }
     }
 }
