@@ -1,26 +1,30 @@
 package pl.wsei.pam.lab06.notifications
 
-import android.app.Notification
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import pl.wsei.pam.lab01.R
 import pl.wsei.pam.lab06.Lab06Activity
 
 class NotificationBroadcastReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        val title = intent.getStringExtra(Lab06Activity.titleExtra) ?: ""
-        val message = intent.getStringExtra(Lab06Activity.messageExtra) ?: ""
+    override fun onReceive(context: Context, intent: Intent?) {
+        val title = intent?.getStringExtra(Lab06Activity.titleExtra) ?: "Zadanie"
+        val message = intent?.getStringExtra(Lab06Activity.messageExtra) ?: "Zbliża się deadline!"
 
         val notification = NotificationCompat.Builder(context, Lab06Activity.channelID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(Lab06Activity.notificationID, notification)
+        if (NotificationManagerCompat.from(context)
+                .areNotificationsEnabled()
+        ) {
+            NotificationManagerCompat.from(context)
+                .notify(Lab06Activity.notificationID, notification)
+        }
     }
 }

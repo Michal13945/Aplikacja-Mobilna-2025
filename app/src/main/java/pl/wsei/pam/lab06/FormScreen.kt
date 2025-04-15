@@ -2,7 +2,6 @@ package pl.wsei.pam.lab06
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Context
 import android.widget.DatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -87,12 +86,7 @@ fun FormScreen(navController: NavController, viewModel: TodoViewModel) {
                         isDone = isDone,
                         priority = priority
                     )
-
-                    // Przekazujemy callback do addTask
-                    viewModel.addTask(task) {
-                        // Po dodaniu zadania wywołujemy powiadomienie
-                        (context as? Lab06Activity)?.scheduleNotificationForNewTask(task)
-                    }
+                    viewModel.addTask(task)
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -101,4 +95,20 @@ fun FormScreen(navController: NavController, viewModel: TodoViewModel) {
             }
         }
     }
+}
+
+fun showDatePicker(context: android.content.Context, onDateSelected: (String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    DatePickerDialog(
+        context,
+        { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+            val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+            onDateSelected(formattedDate)
+        },
+        year, month, day
+    ).show()
 }

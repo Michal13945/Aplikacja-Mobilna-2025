@@ -1,59 +1,76 @@
 package pl.wsei.pam.lab06
 
-import android.app.AlarmManager
-import android.app.PendingIntent
+import android.Manifest
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import pl.wsei.pam.lab06.data.TodoDatabase
+import pl.wsei.pam.lab06.data.TodoRepository
 import pl.wsei.pam.lab06.notifications.NotificationBroadcastReceiver
+import pl.wsei.pam.lab06.ui.theme.Lab06Theme
 import pl.wsei.pam.lab06.viewmodel.TodoViewModel
 import pl.wsei.pam.lab06.viewmodel.TodoViewModelFactory
-import pl.wsei.pam.lab06.ui.theme.Lab06Theme
 
 class Lab06Activity : ComponentActivity() {
 
-    companion object {
-        const val notificationID = 121
-        const val channelID = "Lab06 channel"
-        const val titleExtra = "title"
-        const val messageExtra = "message"
-    }
-
-    private lateinit var todoViewModel: TodoViewModel
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                println("✅ Powiadomienia: zgoda udzielona")
+            } else {
+                println("❌ Powiadomienia: zgoda odmówiona")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dao = TodoDatabase.getDatabase(applicationContext).taskDao()
-        val factory = TodoViewModelFactory(dao)
-        todoViewModel = ViewModelProvider(this, factory).get(TodoViewModel::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        createNotificationChannel()
+
+
+        scheduleAlarm(System.currentTimeMillis() + 2000)
+
+
+        scheduleInitialTaskNotification()
+
+        val dao = TodoDatabase.getDatabase(application).taskDao()
+        val repository = TodoRepository(dao)
+        val todoViewModel = ViewModelProvider(this, TodoViewModelFactory(repository, application))[TodoViewModel::class.java]
 
         setContent {
             Lab06Theme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(todoViewModel)
+                    MainScreen(todoViewModel = todoViewModel)
                 }
             }
         }
     }
 
-    // Metoda do ustawiania powiadomienia po 30 sekundach od utworzenia zadania
-    fun scheduleNotificationForNewTask(task: TodoTask) {
-        val triggerTime = System.currentTimeMillis() + 30000  // 30 sekund od teraz
+    private fun scheduleAlarm(time: Long) {
         val intent = Intent(applicationContext, NotificationBroadcastReceiver::class.java).apply {
-            putExtra(titleExtra, task.title)
-            putExtra(messageExtra, task.content)
+            putExtra(titleExtra, "Deadline!")
+            putExtra(messageExtra, "Zbliża się termin wykonania zadania 📌")
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -64,11 +81,53 @@ class Lab06Activity : ComponentActivity() {
         )
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        alarmManager.setExactAndAllowWhileIdle(
+        alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
-            triggerTime,
+            time,
+            20_000L,
             pendingIntent
         )
+    }
+
+    private fun scheduleInitialTaskNotification() {
+        val intent = Intent(applicationContext, NotificationBroadcastReceiver::class.java).apply {
+            putExtra(titleExtra, "Pierwsze przypomnienie 📌")
+            putExtra(messageExtra, "Pamiętaj o zadaniu już teraz!")
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationID + 1,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + 2000,
+            pendingIntent
+        )
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Lab06 channel"
+            val descriptionText = "Lab06 is channel for notifications for approaching tasks."
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    companion object {
+        const val notificationID = 121
+        const val channelID = "Lab06 channel"
+        const val titleExtra = "title"
+        const val messageExtra = "message"
     }
 }

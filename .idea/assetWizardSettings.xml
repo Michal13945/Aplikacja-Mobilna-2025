@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/circle_notifications/baseline_circle_notifications_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/alarm_off/baseline_alarm_off_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="2376ba" />
-                            <entry key="outputName" value="baseline_circle_notifications_24" />
+                            <entry key="color" value="ba5823" />
+                            <entry key="outputName" value="baseline_alarm_off_24" />
                             <entry key="sourceFile" value="C:\Users\User.DESKTOP-3TEHFS4.000\StudioProjects\wsei-pam-lab" />
                           </map>
                         </option>

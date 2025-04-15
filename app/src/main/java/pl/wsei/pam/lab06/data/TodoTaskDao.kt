@@ -17,4 +17,7 @@ interface TodoTaskDao {
 
     @Query("DELETE FROM todo_tasks WHERE id = :taskId")
     suspend fun delete(taskId: Int)
+
+    @Query("SELECT * FROM todo_tasks WHERE isDone = 'false' ORDER BY deadline ASC LIMIT 1")
+    suspend fun getNextUndoneTask(): TodoTaskEntity?
 }

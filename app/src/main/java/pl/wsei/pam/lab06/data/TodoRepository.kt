@@ -29,4 +29,8 @@ class TodoRepository(private val taskDao: TodoTaskDao) {
     fun getAllTasks() = taskDao.getAll().map { list ->
         list.map { it.toModel() }
     }
+
+    suspend fun getNextUndoneTask(): TodoTask? {
+        return taskDao.getNextUndoneTask()?.toModel()
+    }
 }
