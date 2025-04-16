@@ -3,6 +3,7 @@ package pl.wsei.pam.lab06
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,6 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pl.wsei.pam.lab06.viewmodel.TodoViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -63,7 +66,7 @@ fun FormScreen(navController: NavController, viewModel: TodoViewModel) {
                 Text(if (date.isEmpty()) "Wybierz datę" else "Data: $date")
             }
 
-            Text("Priority", style = MaterialTheme.typography.bodyMedium)
+            Text("Priorytet", style = MaterialTheme.typography.bodyMedium)
             Row {
                 listOf("Low", "Medium", "High").forEach { option ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -77,7 +80,21 @@ fun FormScreen(navController: NavController, viewModel: TodoViewModel) {
             }
 
             Button(
-                onClick = {
+                onClick = onClick@{
+                    if (date.isEmpty()) {
+                        Toast.makeText(context, "Wybierz datę!", Toast.LENGTH_SHORT).show()
+                        return@onClick
+                    }
+
+                    val formatter = DateTimeFormatter.ofPattern("d/M/yyyy")
+                    val selectedDate = LocalDate.parse(date, formatter)
+                    val today = LocalDate.now()
+
+                    if (selectedDate.isBefore(today)) {
+                        Toast.makeText(context, "Nie można wybrać daty z przeszłości!", Toast.LENGTH_LONG).show()
+                        return@onClick
+                    }
+
                     val task = TodoTask(
                         id = 0,
                         title = taskTitle,
@@ -103,12 +120,16 @@ fun showDatePicker(context: android.content.Context, onDateSelected: (String) ->
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-    DatePickerDialog(
+    val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
             val formattedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
             onDateSelected(formattedDate)
         },
         year, month, day
-    ).show()
+    )
+
+    datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
+    datePickerDialog.show()
 }
